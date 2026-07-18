@@ -8,7 +8,7 @@ services:
       # Kafka access from Windows:
       # PLAINTEXT  bootstrap.servers=localhost:9092
       # SSL        bootstrap.servers=localhost:9093  (no mTLS)
-      # SSL_MTLS   bootstrap.servers=localhost:9094  (client cert required)
+      # MTLS       bootstrap.servers=localhost:9094  (client cert required)
       - "9092:9092"
       - "9093:9093"
       - "9094:9094"
@@ -45,7 +45,7 @@ services:
       #   TLS encryption, no client certificate required.
       #   bootstrap.servers=localhost:9093
       #
-      # SSL_MTLS:
+      # MTLS:
       #   TLS encryption + mutual TLS (client certificate required).
       #   bootstrap.servers=localhost:9094
       #
@@ -56,20 +56,20 @@ services:
         INTERNAL://0.0.0.0:29092,
         EXTERNAL://0.0.0.0:9092,
         SSL://0.0.0.0:9093,
-        SSL_MTLS://0.0.0.0:9094,
+        MTLS://0.0.0.0:9094,
         CONTROLLER://0.0.0.0:29093
 
       KAFKA_ADVERTISED_LISTENERS: >-
         INTERNAL://kafka:29092,
         EXTERNAL://localhost:9092,
         SSL://localhost:9093,
-        SSL_MTLS://localhost:9094
+        MTLS://localhost:9094
 
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: >-
         INTERNAL:PLAINTEXT,
         EXTERNAL:PLAINTEXT,
         SSL:SSL,
-        SSL_MTLS:SSL,
+        MTLS:SSL,
         CONTROLLER:PLAINTEXT
 
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
@@ -87,17 +87,16 @@ services:
       KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
 
       # Required so Confluent's configure script mounts the truststore
-      # (needed to validate client certs on SSL_MTLS). Per-listener
+      # (needed to validate client certs on MTLS). Per-listener
       # overrides below control actual client-auth behavior.
       KAFKA_SSL_CLIENT_AUTH: required
 
       # SSL listener: encryption only (no client cert)
       KAFKA_LISTENER_NAME_SSL_SSL_CLIENT_AUTH: none
 
-      # SSL_MTLS listener: require and validate client certificate
-      # Double underscore preserves the underscore in listener name SSL_MTLS
-      # → listener.name.ssl_mtls.ssl.client.auth=required
-      KAFKA_LISTENER_NAME_SSL__MTLS_SSL_CLIENT_AUTH: required
+      # MTLS listener: require and validate client certificate
+      # → listener.name.mtls.ssl.client.auth=required
+      KAFKA_LISTENER_NAME_MTLS_SSL_CLIENT_AUTH: required
 
       # ----------------------------------------------------------------
       # Single-broker settings
